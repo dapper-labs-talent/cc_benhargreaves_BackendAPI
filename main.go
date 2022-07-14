@@ -2,6 +2,7 @@ package main
 
 import (
 	"Dapperlabs_Challenge/endpointHandlers"
+	"Dapperlabs_Challenge/models"
 	"log"
 	"net/http"
 	"time"
@@ -10,6 +11,13 @@ import (
 )
 
 func main() {
+
+	//initialize DB connection pool
+	err := models.InitDB()
+
+	if err != nil {
+		log.Fatalf("Error occured while attempting DB connection: %s", err)
+	}
 	router := mux.NewRouter()
 	//Signup for new user and return valid JWT for authentication
 	router.HandleFunc("/signup", endpointHandlers.Signup).Methods("POST")
@@ -25,11 +33,12 @@ func main() {
 
 	srv := &http.Server{
 		Handler: router,
-		Addr:    "127.0.0.1:8080",
+		Addr:    ":8080",
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
 	log.Fatal(srv.ListenAndServe())
+
 }

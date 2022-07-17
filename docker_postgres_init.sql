@@ -8,7 +8,3 @@ CREATE TABLE IF NOT EXISTS users(
     UNIQUE(email)
 );
 
-
-INSERT INTO users(email, password, firstName, lastName)
-VALUES ('Jade@email.com','abc123','Jade','Smith');
-

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/driver/pgdriver"
 )
 
@@ -16,7 +18,7 @@ var (
 	dbname     = os.Getenv("DB_DATABASE")
 )
 
-var DB *sql.DB
+var DB *bun.DB
 
 func InitDB() error {
 
@@ -31,14 +33,16 @@ func InitDB() error {
 		pgdriver.WithDatabase(dbname),
 	)
 
-	db := sql.OpenDB(pgconn)
+	sqldb := sql.OpenDB(pgconn)
 
-	err := db.Ping()
+	err := sqldb.Ping()
 	if err != nil {
 		return err
 	}
 
-	DB = db
+	bunDB := bun.NewDB(sqldb, pgdialect.New())
+
+	DB = bunDB
 	fmt.Println("Successfully connected!")
 
 	return nil
